@@ -45,12 +45,13 @@ jobs:
         version: latest
     - name: Available platforms
       run: echo ${{ steps.buildx.outputs.platforms }}
-    - name: Run Buildx
+    - name: Docker Login
       uses: azure/docker-login@v1
       with:
         login-server: hub.docker.com
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Run Buildx
       run: |
         docker buildx build \
           --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
