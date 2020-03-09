@@ -38,6 +38,11 @@ jobs:
 #      run: xo
 #    - name: Test with tox
 #      run: tox -v --recreate -e "py27-{flake8,linux}"
+    - name: Docker login
+      env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      run: echo "${DOCKER_PASSWORD}" | docker login --username ${DOCKER_USERNAME} --password-stdin index.docker.io
     - name: Set up Docker Buildx
       id: buildx
       uses: crazy-max/ghaction-docker-buildx@v1
@@ -47,7 +52,6 @@ jobs:
       run: echo ${{ steps.buildx.outputs.platforms }}
     - name: Run Buildx
       run: |
-        docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} index.docker.com
         docker buildx build \
           --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x \
           --output "type=image,push=true" \
